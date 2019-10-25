@@ -22,10 +22,7 @@ class MainActivity : AppCompatActivity(), RecognitionListener {
         speechRecognizer.setRecognitionListener(this)
         val intent = Intent()
         intent.action = RecognizerIntent.ACTION_RECOGNIZE_SPEECH
-        val list = mutableListOf("test 1", "test 2", "test 3")
-        val arrayAdapter = ArrayAdapter(this, R.layout.item_list, list)
 
-        listView.adapter = arrayAdapter
 
         btn_record_audio.setOnClickListener {
 
@@ -40,6 +37,12 @@ class MainActivity : AppCompatActivity(), RecognitionListener {
             speechRecognizer.stopListening()
         }
 
+    }
+
+
+    fun populateList(list: ArrayList<String>){
+        val arrayAdapter = ArrayAdapter(this, R.layout.item_list, list)
+        listView.adapter = arrayAdapter
     }
 
     override fun onReadyForSpeech(params: Bundle?) {
@@ -75,6 +78,11 @@ class MainActivity : AppCompatActivity(), RecognitionListener {
     }
 
     override fun onResults(results: Bundle?) {
+
+        val listString = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+        val floatArrayConfidence = results?.getFloatArray(SpeechRecognizer.CONFIDENCE_SCORES)
         Log.d(DEBUG, "results are here..")
+
+        populateList(listString as ArrayList<String>)
     }
 }
